@@ -11,16 +11,27 @@
   <body>
     <div class="scrolling-background">
       <div class="avatar-container">
-        <img src="img/running-pikachu.gif" alt="running-avatar" />
+        <img class= "active-avatar-image" src="img/running-pikachu.gif" alt="running-avatar" />
       </div>
       <div class="score-counter">
         <h3></h3>
       </div>
       <div class="obstacle-holder"></div>
-      <!-- <div class="startGameScreen">
+      <div class="startGameScreen">
         <h3>ZombieRunner&trade;</h3>
         <h2>Choose your avatar (double click avatar to start)</h2>
-      </div> -->
+        <div class="avatars">
+          <div class="pick-avatar-container" id="pick-avatar-pikachu">
+            <img class="pick-avatar-image" src="img/running-pikachu.gif"/>
+          </div>
+          <div class="pick-avatar-container" id="pick-avatar-sonic">
+            <img class="pick-avatar-image" src="img/running-sonic-right.gif"/>
+          </div>
+          <div class="pick-avatar-container" id="pick-avatar-gold">
+            <img class="pick-avatar-image" src="img/running-gold-man.gif"/>
+          </div>
+        </div>
+      </div>
       <div class="gameOverScreen">
         <h3>GAME OVER!</h3>
         <h2>Press Space to play again</h2>

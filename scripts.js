@@ -1,6 +1,24 @@
 $(document).ready(function(){
+
+  var scoreCount = 0;
+  var scoreCountID = setInterval(function(){
+    if(GameStatus === 'active'){
+        scoreCount++;
+        $('.score-counter h3').text("Score: " + scoreCount);
+      }
+    }, 100);
+  var obstacleID = setInterval(function(){//CREATE OBSTACLES AT RANDOM INTERVALS
+      if(GameStatus === 'active'){
+        var randomInterval = Math.floor(Math.random() * 1000);
+        setTimeout(function(){
+          createObstacle();
+        }, randomInterval);
+      }
+    }, 1500)
+
   var allowed = true;
-  var GameStatus = 'active';
+  var GameStatus = 'ready';
+  //deactivateScoreAndObstacles();
   $(window).keydown(function(event){
     if (event.repeat != undefined) {
       allowed = !event.repeat;
@@ -21,6 +39,8 @@ $(document).ready(function(){
       case 32:
         if(GameStatus === 'gameOver'){
           location.reload();
+        }else if (GameStatus === 'ready') {
+          startNewGame();
         }
         break;
       }
@@ -33,44 +53,31 @@ $(document).ready(function(){
     allowed = true;
   });
 
-var scoreCount = 0;
+  $('#pick-avatar-pikachu').click(function(){
+     $('.active-avatar-image').attr("src", "img/running-pikachu.gif");
+  })
+  $('#pick-avatar-sonic').click(function(){
+     $('.active-avatar-image').attr("src", "img/running-sonic-right.gif");
+  })
+  $('#pick-avatar-gold').click(function(){
+     $('.active-avatar-image').attr("src", "img/running-gold-man.gif");
+  })
+  $('.pick-avatar-container').dblclick(function(){
+     startNewGame();
+  })
 
 function resetScoreCount(){
   scoreCount = 0;
 }
 
 var scoreCountInterval = 100;
-var scoreCountFunction = setInterval(function(){
-    scoreCount++;
-    $('.score-counter h3').text("Score: " + scoreCount);
-  }, 100);
-function startNewGame(){
 
+function startNewGame(){
+  GameStatus='active';
+  $('.startGameScreen').css('display', 'none');
 }
 
-// var scoreCountFunction = function(setInterval(function(){
-//     scoreCount++;
-//     $('.score-counter h3').text("Score: " + scoreCount);
-//   }, 100));
-
-  setInterval(function(){
-    if($(".obstacle-holder").children().length > 0){
-      if($(".obstacle-holder div:first-child").offset().left < 0){
-        $(".obstacle-holder div:first-child").remove();
-      }
-    }
-  }, 300);
-
-
-var obstacleInterval = 1500;
-  obstacleInterval = setInterval(function(){//CREATE OBSTACLES AT RANDOM INTERVALS
-    var randomInterval = Math.floor(Math.random() * 1000);
-    setTimeout(function(){
-      createObstacle();
-    }, randomInterval);
-  }, obstacleInterval)
-
-  setInterval(function($div2){   //CHECK FOR COLLISIONS
+  var collisionID = setInterval(function($div2){   //CHECK FOR COLLISIONS
     if($(".obstacle-holder").children().length > 0){
       var $div1 = $('.avatar-container');
       var x1Left = $div1.offset().left;
@@ -83,6 +90,7 @@ var obstacleInterval = 1500;
         var y2 = $div2.offset().top;
 
         if(x2 < x1Right && x2 > x1Left && y1Bottom > y2){
+          clearInterval(collisionID);
           gameOver();
         }
       }
@@ -91,13 +99,12 @@ var obstacleInterval = 1500;
 
   function gameOver(){
     GameStatus = 'gameOver';
-    // $('.scrolling-background').append($("<div>", {class: "gameOverScreen"}));
     $('.gameOverScreen').css('display', 'flex');
     $('.gameOverScreen').css('align-items', 'center');
     $('.gameOverScreen').css('flex-direction', 'column');
     $('.obstacle').stop();
-    clearInterval(obstacleInterval);
-    clearInterval(scoreCountFunction);
+    clearInterval(obstacleID);
+    clearInterval(scoreCountID);
     $('.score-counter').css("background","black");
     $('.score-counter').css("display","absolute");
     $('.score-counter').css("z-index",9999);
