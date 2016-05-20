@@ -1,6 +1,6 @@
 $(document).ready(function(){
   var allowed = true;
-  var GameStatus = 'ready';
+  var GameStatus = 'active';
   $(window).keydown(function(event){
     if (event.repeat != undefined) {
       allowed = !event.repeat;
@@ -9,17 +9,30 @@ $(document).ready(function(){
     allowed = false;
     switch(event.which) {
       case 38:
-        $('.avatar-container').animate({
-            top: '-200px'
-        }, 400, "easeOutQuad");
-        $('.avatar-container').animate({
-            top: '0px'
-        }, 400, "easeInQuad");
+        if(GameStatus === 'active'){
+          $('.avatar-container').animate({
+              top: '-200px'
+          }, 400, "easeOutQuad");
+          $('.avatar-container').animate({
+              top: '0px'
+          }, 400, "easeInQuad");
+        }else if (GameStatus === 'gameOver' || GameStatus === 'ready'){
+          startNewGame();
+        }
         break;
-      case 37:
-        createObstacle();
     }
   });
+
+  function startNewGame(){
+    $('.gameOverScreen').css('display', 'none');
+    for(var i = 1; i <= $(".obstacle-holder").children().length; i++){
+        $('.obstacle-holder div:nth-child('+i+')').remove();
+    }
+    resetScoreCount();
+    gameStatus = 'active';
+    scoreCountFunction = setInterval(scoreCountFunction, scoreCountInterval);
+    // setInterval(obstacleInterval);
+  }
 
   $(document).keyup(function(e) {
     allowed = true;
@@ -29,10 +42,16 @@ $(document).ready(function(){
   });
 
 var scoreCount = 0;
-  setInterval(function(){
+
+function resetScoreCount(){
+  scoreCount = 0;
+}
+
+var scoreCountInterval = 100;
+var scoreCountFunction = setInterval(function(){
     scoreCount++;
     $('.score-counter h3').text("Score: " + scoreCount);
-  }, 100);
+  }, scoreCountInterval);
 
   setInterval(function(){
     if($(".obstacle-holder").children().length > 0){
@@ -42,12 +61,15 @@ var scoreCount = 0;
     }
   }, 300);
 
-  setInterval(function(){
+
+var obstacleInterval = 1500;
+  obstacleInterval = setInterval(function(){//CREATE OBSTACLES AT RANDOM INTERVALS
     var randomInterval = Math.floor(Math.random() * 1000);
     setTimeout(function(){
       createObstacle();
     }, randomInterval);
-  }, 1500)
+  }, obstacleInterval)
+
   setInterval(function($div2){   //CHECK FOR COLLISIONS
     if($(".obstacle-holder").children().length > 0){
       var $div1 = $('.avatar-container');
@@ -68,12 +90,18 @@ var scoreCount = 0;
   }, 50);
 
   function gameOver(){
-
+    GameStatus = 'gameOver';
+    // $('.scrolling-background').append($("<div>", {class: "gameOverScreen"}));
+    $('.gameOverScreen').css('display', 'inline');
+    $('.obstacle').stop();
+    clearInterval(obstacleInterval);
+    clearInterval(scoreCountFunction);
   };
 
   var createObstacle = function(){
     var obstacle = $("<div>", {class: "obstacle"});
     $('.obstacle-holder').append(obstacle);
+    // obstacle.append("<img>", {src: "img/walking-zombie.gif"});
     moveObstacleAcrossScreen(obstacle);
   };
   function moveObstacleAcrossScreen(obstacle){

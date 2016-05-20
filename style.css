@@ -2,8 +2,8 @@
   width:1000px;
   height: 500px;
   background: url("img/scrolling-background.png") repeat-y;
-  -webkit-animation: backgroundScroll 3s linear infinite;
-  animation: backgroundScroll 3s linear infinite;
+  -webkit-animation: backgroundScroll 5s linear infinite;
+  animation: backgroundScroll 5s linear infinite;
   position: relative;
 }
 
@@ -47,15 +47,26 @@ to {background-position: -1000px 0;}
 }
 .obstacle-holder {
   position: absolute;
-  width: 1100px;
-  bottom: 50px;
+  width: 1000px;
+  bottom: 30px;
   height: 100px;
 }
 .obstacle {
   height: 100%;
-  width: 25px;
-  background: red;
-  border: 5px black solid;
+  width: 50px;
+  /*background: red;*/
+  /*border: 5px black solid;*/
   position: absolute;
   right: 0;
+  background: url("img/walking-zombie.gif");
+  background-size: 100% 100%;
+}
+.gameOverScreen {
+  display: none;
+  position:absolute;
+  margin: 50px 300px;
+  width: 400px;
+  height:250px;
+  background:white;
+  border: 5px solid black;
 }
